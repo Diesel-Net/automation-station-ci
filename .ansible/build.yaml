@@ -48,17 +48,17 @@
 
     - name: extract version and changeset
       set_fact:
-        version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
-        changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
+        unity_version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
+        unity_changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
 
 
     - debug:
-        msg: "version: {{ version }}"
+        msg: "unity_version: {{ unity_version }}"
     - debug:
-        msg: "changeset: {{ changeset }}"
+        msg: "unity_changeset: {{ unity_changeset }}"
 
 
-    - name: Install docker python package on remote host
+    - name: install docker python package on remote host
       pip:
         name: docker
 
@@ -78,8 +78,8 @@
           args:
             hubImage: unityci/hub:latest
             baseImage: unityci/hub:latest
-            version: '{{ version }}'
-            changeset: '{{ changeset }}'
+            version: '{{ unity_version }}'
+            changeset: '{{ unity_changeset }}'
             module: 'windows-mono'
         source: build
         name: docker.nexus.diesel.net/unity-editor:{{ version }}
