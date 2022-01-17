@@ -40,11 +40,11 @@
         dest: '{{ playbook_dir }}/../'
         flat: yes
 
-    - name: Load version from ProjectVersion.txt
+    - name: load variables from ProjectVersion.txt
       include_vars:
         file: '{{ playbook_dir }}/../ProjectVersion.txt'
 
-    - name: extract variables
+    - name: extract version and changeset
       set_fact:
         version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
         changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"

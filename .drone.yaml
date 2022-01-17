@@ -4,7 +4,7 @@ type: docker
 name: automation-station weekly build
 
 steps:
-  - name: clone and fetch version file
+  - name: build
     image: plugins/ansible:3
     environment:
       ANSIBLE_CONFIG: .ansible/ansible.cfg
@@ -13,24 +13,9 @@ steps:
     settings:
       galaxy: .ansible/roles/requirements.yaml
       inventory: .ansible/inventories/development
-      playbook: .ansible/clone_and_fetch.yaml
+      playbook: .ansible/build.yaml
       private_key:
         from_secret: automation_id_rsa
-
-
-  # - name: debug
-  #   image: bash
-  #   commands:
-  #     - ls -al
-  #     - cat ProjectVersion.txt
-
-
-  # - name: parse version
-  #   image: jlordiales/jyparser
-  #   commands:
-  #     - ls -al
-  #     - /bin/start ProjectVersion.txt get ".m_EditorVersion"
-  #     - /bin/start ProjectVersion.txt get ".m_EditorVersionWithRevision"
 
 trigger:
   event:
