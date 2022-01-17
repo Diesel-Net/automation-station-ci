@@ -46,8 +46,8 @@
 
     - name: extract variables
       set_fact:
-        version: "{{ m_EditorVersionWithRevision.stdout.split(' ') | first }}"
-        changeset: "{{ m_EditorVersionWithRevision.stdout.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
+        version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
+        changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
 
     - debug:
         msg: "version: {{ version }}"
