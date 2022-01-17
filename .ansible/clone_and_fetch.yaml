@@ -13,10 +13,11 @@
         tasks_from: make_data_dir
     
     
-    - name: Git clone modulocity/automation-station
+    - name: git clone modulocity/automation-station
       git:
         repo: 'https://{{ git_clone_pat }}@github.com/modulocity/automation-station.git'
         dest: '{{ config_dir }}/automation-station'
+        depth: 1
         version: development
         accept_hostkey: yes
         update: yes

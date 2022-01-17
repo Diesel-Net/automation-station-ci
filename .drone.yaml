@@ -4,7 +4,7 @@ type: docker
 name: automation-station weekly build
 
 steps:
-  - name: clone and fetch version
+  - name: clone and fetch version file
     image: plugins/ansible:3
     environment:
       ANSIBLE_CONFIG: .ansible/ansible.cfg
@@ -24,6 +24,11 @@ steps:
       - ls -al
       - cat ProjectVersion.txt
 
+
+  - name: parse version
+    image: jlordiales/jyparser
+    commands:
+      - ProjectVersion.txt get ".m_EditorVersion"
 
 trigger:
   event:
