@@ -82,3 +82,5 @@
             changeset: '{{ changeset }}'
             module: 'windows-mono'
         source: build
+        name: docker.nexus.diesel.net/unity-editor:{{ version }}
+        push: yes
