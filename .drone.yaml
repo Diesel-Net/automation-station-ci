@@ -13,6 +13,7 @@ steps:
       NEXUS_PASS:
         from_secret: nexus_pass
     settings:
+      requirements: .ansible/files/requiremnents.txt
       galaxy: .ansible/roles/requirements.yaml
       inventory: .ansible/inventories/development
       playbook: .ansible/build.yaml
