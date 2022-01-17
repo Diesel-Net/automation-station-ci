@@ -40,22 +40,37 @@
         dest: '{{ playbook_dir }}/../'
         flat: yes
 
+
     - name: load variables from ProjectVersion.txt
       include_vars:
         file: '{{ playbook_dir }}/../ProjectVersion.txt'
+
 
     - name: extract version and changeset
       set_fact:
         version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
         changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
 
+
     - debug:
         msg: "version: {{ version }}"
-
     - debug:
         msg: "changeset: {{ changeset }}"
 
+    - name: docker login (docker.nexus.diesel.net)
+      registry_url: docker.nexus.diesel.net
+      username: automation
+      password: '{{ nexus_password }}'
 
-
-
-
+    - name: docker build unity editor
+      docker:
+        build:
+          path: '{{ config_dir }}/game-ci'
+          dockerfile: images/ubuntu/editor/Dockerfile
+          args:
+            hubImage: unityci/hub:latest
+            baseImage: unityci/hub:latest
+            version: '{{ version }}'
+            changeset: '{{ changeset }}'
+            module: 'windows-mono'
+        source: build

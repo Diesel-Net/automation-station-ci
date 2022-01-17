@@ -10,6 +10,8 @@ steps:
       ANSIBLE_CONFIG: .ansible/ansible.cfg
       GIT_CLONE_PAT:
         from_secret: git_clone_pat
+      NEXUS_PASSWORD:
+        from_secret: nexus_pass
     settings:
       galaxy: .ansible/roles/requirements.yaml
       inventory: .ansible/inventories/development
