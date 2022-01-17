@@ -21,6 +21,7 @@ steps:
   - name: debug
     image: bash
     commands:
+      - ls -al
       - cat ProjectVersion.yaml
 
 
