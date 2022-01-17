@@ -27,12 +27,12 @@
         dest: '{{ playbook_dir }}/../'
         flat: yes
 
-    # - name: Load version from ProjectVersion.txt
-    #   include_vars:
-    #     file: '{{ playbook_dir }}/../ProjectVersion.yaml'
+    - name: Load version from ProjectVersion.txt
+      include_vars:
+        file: '{{ playbook_dir }}/../ProjectVersion.txt'
 
-    # - debug:
-    #     msg: 'm_EditorVersion: {{ m_EditorVersion }}'
+    - debug:
+        msg: 'm_EditorVersion: {{ m_EditorVersion }}'
 
-    # - debug:
-    #     msg: 'm_EditorVersionWithRevision: {{ m_EditorVersionWithRevision }}'
+    - debug:
+        msg: 'm_EditorVersionWithRevision: {{ m_EditorVersionWithRevision }}'
