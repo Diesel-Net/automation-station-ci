@@ -29,7 +29,7 @@ steps:
     image: jlordiales/jyparser
     commands:
       - ls -al
-      - ProjectVersion.txt get ".m_EditorVersion"
+      - /bin/start ProjectVersion.txt get ".m_EditorVersion"
 
 trigger:
   event:
