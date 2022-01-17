@@ -58,7 +58,7 @@
         msg: "changeset: {{ changeset }}"
 
 
-     name: Install docker python package on remote host
+    - name: Install docker python package on remote host
       pip:
         name: docker
 
