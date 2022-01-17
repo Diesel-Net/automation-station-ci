@@ -28,7 +28,7 @@
 
     - name: Load version from ProjectVersion.txt
       include_vars:
-        file: '{{ playbook_dir }}../ProjectVersion.yaml'
+        file: '{{ playbook_dir }}/../ProjectVersion.yaml'
 
     - debug:
         msg: 'm_EditorVersion: {{ m_EditorVersion }}'
