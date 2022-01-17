@@ -23,6 +23,14 @@ steps:
     commands:
       - ls -al
       - cat ProjectVersion.txt
+      - export FOO=BAR
+
+
+  - name: debug
+    image: bash
+    commands:
+      - printenv FOO
+      - printenv
 
 
   - name: parse version
@@ -30,6 +38,7 @@ steps:
     commands:
       - ls -al
       - /bin/start ProjectVersion.txt get ".m_EditorVersion"
+      - /bin/start ProjectVersion.txt get ".m_EditorVersionWithRevision"
 
 trigger:
   event:
