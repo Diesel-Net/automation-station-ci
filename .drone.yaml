@@ -18,29 +18,19 @@ steps:
         from_secret: automation_id_rsa
 
 
-  - name: debug
-    image: bash
-    commands:
-      - ls -al
-      - cat ProjectVersion.txt
-      - export FOO=BAR
+  # - name: debug
+  #   image: bash
+  #   commands:
+  #     - ls -al
+  #     - cat ProjectVersion.txt
 
 
-  - name: debug 2
-    image: bash
-    #environment:
-      #FOO
-    commands:
-      - printenv FOO
-      - printenv
-
-
-  - name: parse version
-    image: jlordiales/jyparser
-    commands:
-      - ls -al
-      - /bin/start ProjectVersion.txt get ".m_EditorVersion"
-      - /bin/start ProjectVersion.txt get ".m_EditorVersionWithRevision"
+  # - name: parse version
+  #   image: jlordiales/jyparser
+  #   commands:
+  #     - ls -al
+  #     - /bin/start ProjectVersion.txt get ".m_EditorVersion"
+  #     - /bin/start ProjectVersion.txt get ".m_EditorVersionWithRevision"
 
 trigger:
   event:
