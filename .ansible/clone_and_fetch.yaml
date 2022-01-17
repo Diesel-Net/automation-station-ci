@@ -11,6 +11,16 @@
     - include_role:
         name: common
         tasks_from: make_data_dir
+
+
+    - name: git clone game-ci/docker
+      git:
+        repo: 'https://github.com/game-ci/docker.git'
+        dest: '{{ config_dir }}/game-ci'
+        depth: 1
+        version: main
+        accept_hostkey: yes
+        update: yes
     
     
     - name: git clone modulocity/automation-station
@@ -22,14 +32,7 @@
         accept_hostkey: yes
         update: yes
 
-    - name: git clone game-ci/docker
-      git:
-        repo: 'git@github.com:game-ci/docker.git'
-        dest: '{{ config_dir }}/game-ci'
-        depth: 1
-        version: main
-        accept_hostkey: yes
-        update: yes
+
 
 
     - name: fetch the ProjectVersion.txt file
