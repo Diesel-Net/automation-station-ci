@@ -26,8 +26,10 @@ steps:
       - export FOO=BAR
 
 
-  - name: debug
+  - name: debug 2
     image: bash
+    environment:
+      -FOO
     commands:
       - printenv FOO
       - printenv
