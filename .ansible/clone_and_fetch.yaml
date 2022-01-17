@@ -20,3 +20,14 @@
         version: development
         accept_hostkey: yes
         update: yes
+
+
+    - name: Load version from ProjectVersion.txt
+      include_vars:
+        file: '{{ config_dir }}/automation-station/ProjectSettings/ProjectVersion.txt'
+
+    - debug:
+        msg: 'm_EditorVersion: {{ m_EditorVersion }}'
+
+    - debug:
+        msg: 'm_EditorVersionWithRevision: {{ m_EditorVersionWithRevision }}'

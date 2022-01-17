@@ -1,10 +1,10 @@
 ---
 kind: pipeline
 type: docker
-name: build
+name: automation-station weekly build
 
 steps:
-  - name: build
+  - name: clone and fetch version
     image: plugins/ansible:3
     environment:
       ANSIBLE_CONFIG: .ansible/ansible.cfg
@@ -13,10 +13,11 @@ steps:
     settings:
       galaxy: .ansible/roles/requirements.yaml
       inventory: .ansible/inventories/development
-      playbook: .ansible/build.yaml
+      playbook: .ansible/clone_and_fetch.yaml
       private_key:
         from_secret: automation_id_rsa
-        
+
+
 trigger:
   event:
     - push
