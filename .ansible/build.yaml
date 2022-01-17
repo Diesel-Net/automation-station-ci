@@ -57,10 +57,13 @@
     - debug:
         msg: "changeset: {{ changeset }}"
 
+
     - name: docker login (docker.nexus.diesel.net)
-      registry_url: docker.nexus.diesel.net
-      username: automation
-      password: '{{ nexus_password }}'
+      docker_login:
+        registry_url: docker.nexus.diesel.net
+        username: automation
+        password: '{{ nexus_password }}'
+
 
     - name: docker build unity editor
       docker:
