@@ -18,6 +18,12 @@ steps:
         from_secret: automation_id_rsa
 
 
+  - name: debug
+    image: bash
+    commands:
+      - cat ProjectVersion.yaml
+
+
 trigger:
   event:
     - push

@@ -21,10 +21,14 @@
         accept_hostkey: yes
         update: yes
 
+    - name: fetch the ProjectVersion.txt file
+      fetch:
+        src: '{{ config_dir }}/automation-station/ProjectSettings/ProjectVersion.txt'
+        dest: '{{ playbook_dir }}../ProjectVersion.yaml'
 
     - name: Load version from ProjectVersion.txt
       include_vars:
-        file: '{{ config_dir }}/automation-station/ProjectSettings/ProjectVersion.txt'
+        file: '{{ playbook_dir }}../ProjectVersion.yaml'
 
     - debug:
         msg: 'm_EditorVersion: {{ m_EditorVersion }}'
