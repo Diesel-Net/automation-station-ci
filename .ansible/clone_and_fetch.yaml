@@ -24,7 +24,8 @@
     - name: fetch the ProjectVersion.txt file
       fetch:
         src: '{{ config_dir }}/automation-station/ProjectSettings/ProjectVersion.txt'
-        dest: '{{ playbook_dir }}/../ProjectVersion.yaml'
+        dest: '{{ playbook_dir }}'
+        flat: yes
 
     # - name: Load version from ProjectVersion.txt
     #   include_vars:
