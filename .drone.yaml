@@ -28,8 +28,8 @@ steps:
 
   - name: debug 2
     image: bash
-    environment:
-      -FOO
+    #environment:
+      #FOO
     commands:
       - printenv FOO
       - printenv
