@@ -8,21 +8,12 @@
         name: common
         tasks_from: make_config_dir
 
+
     - include_role:
         name: common
         tasks_from: make_data_dir
-
-
-    - name: git clone game-ci/docker
-      git:
-        repo: 'https://github.com/game-ci/docker.git'
-        dest: '{{ config_dir }}/game-ci'
-        depth: 1
-        version: main
-        accept_hostkey: yes
-        update: yes
     
-    
+
     - name: git clone modulocity/automation-station
       git:
         repo: 'https://{{ git_clone_pat }}@github.com/modulocity/automation-station.git'
@@ -33,6 +24,14 @@
         update: yes
 
 
+    - name: git clone game-ci/docker
+      git:
+        repo: 'https://github.com/game-ci/docker.git'
+        dest: '{{ config_dir }}/game-ci'
+        depth: 1
+        version: main
+        accept_hostkey: yes
+        update: yes
 
 
     - name: fetch the ProjectVersion.txt file
@@ -45,11 +44,18 @@
       include_vars:
         file: '{{ playbook_dir }}/../ProjectVersion.txt'
 
-    - debug:
-        msg: 'm_EditorVersion: {{ m_EditorVersion }}'
+    - name: extract variables
+      set_fact:
+        version: "{{ m_EditorVersionWithRevision.stdout.split(' ') | first }}"
+        changeset: "{{ m_EditorVersionWithRevision.stdout.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
 
     - debug:
-        msg: 'm_EditorVersionWithRevision: {{ m_EditorVersionWithRevision }}'
+        msg: "version: {{ version }}"
+
+    - debug:
+        msg: "changeset: {{ changeset }}"
+
+
 
 
 
