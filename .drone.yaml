@@ -22,7 +22,7 @@ steps:
     image: bash
     commands:
       - ls -al
-      - cat ProjectVersion.yaml
+      - cat ProjectVersion.txt
 
 
 trigger:
