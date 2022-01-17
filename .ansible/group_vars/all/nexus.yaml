@@ -1,1 +1,1 @@
-nexus_password: '{{ lookup("env", "NEXUS_PASS")'
+nexus_password: '{{ lookup("env", "NEXUS_PASS") }}'
