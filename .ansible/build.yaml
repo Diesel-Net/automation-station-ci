@@ -58,6 +58,11 @@
         msg: "changeset: {{ changeset }}"
 
 
+     name: Install docker python package on remote host
+      pip:
+        name: docker
+
+
     - name: docker login (docker.nexus.diesel.net)
       docker_login:
         registry_url: docker.nexus.diesel.net
