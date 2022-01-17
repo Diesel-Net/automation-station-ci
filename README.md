@@ -4,6 +4,7 @@ Automation Station CI
 
 ## Notes
 
+Build Custom Unity Editor Docker image from `game-ci/docker`
 ```bash
 docker build \
     -f ./images/ubuntu/editor/Dockerfile \

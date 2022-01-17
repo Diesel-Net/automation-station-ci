@@ -73,6 +73,7 @@
     - name: docker build unity editor
       docker_image:
         build:
+          pull: yes
           path: '{{ config_dir }}/game-ci'
           dockerfile: images/ubuntu/editor/Dockerfile
           args:
@@ -80,7 +81,7 @@
             baseImage: unityci/hub:latest
             version: '{{ unity_version }}'
             changeSet: '{{ unity_changeset }}'
-            module: 'windows-mono'
+            module: '{{ unity_module }}'
         source: build
-        name: docker.nexus.diesel.net/unity-editor:{{ version }}
+        name: docker.nexus.diesel.net/unity-editor:{{ unity_version }}-{{ unity_module }}
         push: yes
