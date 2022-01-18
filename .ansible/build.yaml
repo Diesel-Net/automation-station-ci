@@ -22,6 +22,7 @@
         version: development
         accept_hostkey: yes
         update: yes
+        force: yes
 
 
     - name: 'git clone game-ci/docker {{ config_dir }}/game-ci'
