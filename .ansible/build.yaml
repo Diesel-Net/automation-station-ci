@@ -86,10 +86,20 @@
         push: yes
 
     # We could add a a license for each year into inventory maybe?
-    - name: 'Copy Unity license to {{ config_dir }}/Unity_v2020.x.ulf'
+    - name: 'copy Unity license to {{ config_dir }}/Unity_v2020.x.ulf'
       copy:
         content: '{{ unity_ulf }}'
         dest: '{{ config_dir }}/Unity_v2020.x.ulf'
   
 
-# docker run docker.nexus.diesel.net/unity-editor:2020.3.24f1-windows-mono unity-editor -quit -projectPath '/home/automation/.diesel/automation-station-ci/development/config/automation-station' -executeMethod BuildRunner.PerformBuild
+    - name: 'activate editor and perform build'
+      docker_container:
+        name: automation_station_{{ drone_build_number }}
+        image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+        command: /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.PerformBuild -logFile -
+        state: started
+        recreate: yes
+        volumes:
+          - '{{ config_dir }}/Unity_v2020.x.ulf:/Unity_v2020.x.ulf'
+          - '{{ config_dir }}/automation-station:/automation-station'
+
