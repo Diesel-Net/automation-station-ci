@@ -4,34 +4,34 @@
 
   tasks:
 
-    # - include_role:
-    #     name: common
-    #     tasks_from: make_config_dir
+    - include_role:
+        name: common
+        tasks_from: make_config_dir
 
 
-    # - include_role:
-    #     name: common
-    #     tasks_from: make_data_dir
+    - include_role:
+        name: common
+        tasks_from: make_data_dir
     
 
-    # - name: git clone modulocity/automation-station
-    #   git:
-    #     repo: 'https://{{ git_clone_pat }}@github.com/modulocity/automation-station.git'
-    #     dest: '{{ config_dir }}/automation-station'
-    #     depth: 1
-    #     version: development
-    #     accept_hostkey: yes
-    #     update: yes
+    - name: git clone modulocity/automation-station
+      git:
+        repo: 'https://{{ git_clone_pat }}@github.com/modulocity/automation-station.git'
+        dest: '{{ config_dir }}/automation-station'
+        depth: 1
+        version: development
+        accept_hostkey: yes
+        update: yes
 
 
-    # - name: git clone game-ci/docker
-    #   git:
-    #     repo: 'https://github.com/game-ci/docker.git'
-    #     dest: '{{ config_dir }}/game-ci'
-    #     depth: 1
-    #     version: main
-    #     accept_hostkey: yes
-    #     update: yes
+    - name: git clone game-ci/docker
+      git:
+        repo: 'https://github.com/game-ci/docker.git'
+        dest: '{{ config_dir }}/game-ci'
+        depth: 1
+        version: main
+        accept_hostkey: yes
+        update: yes
 
 
     - name: fetch the ProjectVersion.txt file
