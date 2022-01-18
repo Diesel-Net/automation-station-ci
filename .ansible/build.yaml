@@ -85,9 +85,11 @@
         name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
         push: yes
 
-    - name:
+    # We could add a a license for each year into inventory maybe?
+    - name: 'Copy Unity license to {{ config_dir }}/Unity_v2020.x.ulf'
       copy:
         content: '{{ unity_ulf }}'
-        dest: '{{ config_dir }}/unity_license.ulf'
+        dest: '{{ config_dir }}/Unity_v2020.x.ulf'
+  
 
 # docker run docker.nexus.diesel.net/unity-editor:2020.3.24f1-windows-mono unity-editor -quit -projectPath '/home/automation/.diesel/automation-station-ci/development/config/automation-station' -executeMethod BuildRunner.PerformBuild
