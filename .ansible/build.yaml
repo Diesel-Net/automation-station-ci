@@ -94,12 +94,13 @@
 
     - name: 'activate editor and perform build'
       docker_container:
-        name: automation_station_{{ drone_build_number }}
+        name: automation-station-build-{{ drone_build_number }}
         image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
         command: /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.PerformBuild -logFile -"
         state: started
-        recreate: yes
+        #recreate: yes
         volumes:
           - '{{ config_dir }}/Unity_v2020.x.ulf:/Unity_v2020.x.ulf'
           - '{{ config_dir }}/automation-station:/automation-station'
+        output_logs: yes
 
