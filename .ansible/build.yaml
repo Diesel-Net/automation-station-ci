@@ -63,11 +63,11 @@
         name: docker
 
 
-    - name: docker login (docker.nexus.diesel.net)
+    - name: 'docker login ({{ docker_registry }})'
       docker_login:
-        registry_url: docker.nexus.diesel.net
-        username: automation
-        password: '{{ nexus_password }}'
+        registry_url: '{{ docker_registry }}'
+        username: '{{ docker_registry_username }}'
+        password: '{{ docker_registry_password }}'
 
 
     - name: docker build unity editor
@@ -77,11 +77,11 @@
           path: '{{ config_dir }}/game-ci'
           dockerfile: images/ubuntu/editor/Dockerfile
           args:
-            hubImage: unityci/hub:latest
-            baseImage: unityci/hub:latest
             version: '{{ unity_version }}'
             changeSet: '{{ unity_changeset }}'
             module: '{{ unity_module }}'
         source: build
-        name: docker.nexus.diesel.net/unity-editor:{{ unity_version }}-{{ unity_module }}
+        name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
         push: yes
+
+# docker run docker.nexus.diesel.net/unity-editor:2020.3.24f1-windows-mono unity-editor -quit -projectPath '{{ config_dir }}/automation-station' -executeMethod BuildRunner.PerformBuild

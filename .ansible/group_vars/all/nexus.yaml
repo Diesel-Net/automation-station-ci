@@ -1,1 +1,2 @@
 nexus_password: '{{ lookup("env", "NEXUS_PASS") }}'
+nexus_username: '{{ lookup("env", "NEXUS_USER") }}'
