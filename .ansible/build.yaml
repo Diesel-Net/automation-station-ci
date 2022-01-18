@@ -117,4 +117,4 @@
         /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
 
     - debug:
-        msg: '{{ docker_output }}'
+        msg: '{{ docker_output.stdout_lines }}'
