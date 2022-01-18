@@ -87,7 +87,7 @@
 
     - name:
       copy:
-        contents: '{{ unity_ulf }}'
+        content: '{{ unity_ulf }}'
         dest: '{{ config_dir }}/unity_license.ulf'
 
 # docker run docker.nexus.diesel.net/unity-editor:2020.3.24f1-windows-mono unity-editor -quit -projectPath '/home/automation/.diesel/automation-station-ci/development/config/automation-station' -executeMethod BuildRunner.PerformBuild
