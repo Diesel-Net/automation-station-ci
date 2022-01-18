@@ -14,7 +14,7 @@
         tasks_from: make_data_dir
     
 
-    - name: git clone modulocity/automation-station
+    - name: 'git clone modulocity/automation-station to {{ config_dir }}/automation-station'
       git:
         repo: 'https://{{ git_clone_pat }}@github.com/modulocity/automation-station.git'
         dest: '{{ config_dir }}/automation-station'
@@ -24,7 +24,7 @@
         update: yes
 
 
-    - name: git clone game-ci/docker
+    - name: 'git clone game-ci/docker {{ config_dir }}/game-ci'
       git:
         repo: 'https://github.com/game-ci/docker.git'
         dest: '{{ config_dir }}/game-ci'
