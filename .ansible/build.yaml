@@ -1,0 +1,120 @@
+- hosts: manager
+  roles:
+    - common
+
+  tasks:
+
+    - include_role:
+        name: common
+        tasks_from: make_config_dir
+
+
+    - include_role:
+        name: common
+        tasks_from: make_data_dir
+    
+
+    - name: 'git clone modulocity/automation-station to {{ config_dir }}/automation-station'
+      git:
+        repo: 'https://{{ git_clone_pat }}@github.com/modulocity/automation-station.git'
+        dest: '{{ config_dir }}/automation-station'
+        depth: 1
+        version: development
+        accept_hostkey: yes
+        update: yes
+        #force: yes
+
+
+    - name: 'git clone game-ci/docker {{ config_dir }}/game-ci'
+      git:
+        repo: 'https://github.com/game-ci/docker.git'
+        dest: '{{ config_dir }}/game-ci'
+        depth: 1
+        version: main
+        accept_hostkey: yes
+        update: yes
+
+
+    - name: fetch the ProjectVersion.txt file
+      fetch:
+        src: '{{ config_dir }}/automation-station/ProjectSettings/ProjectVersion.txt'
+        dest: '{{ playbook_dir }}/../'
+        flat: yes
+
+
+    - name: load variables from ProjectVersion.txt
+      include_vars:
+        file: '{{ playbook_dir }}/../ProjectVersion.txt'
+
+
+    - name: extract version and changeset
+      set_fact:
+        unity_version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
+        unity_changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
+
+
+    - debug:
+        msg: "unity_version: {{ unity_version }}"
+    - debug:
+        msg: "unity_changeset: {{ unity_changeset }}"
+
+
+    - name: install docker python package on remote host
+      pip:
+        name: docker
+
+
+    - name: 'docker login ({{ docker_registry }})'
+      docker_login:
+        registry_url: '{{ docker_registry }}'
+        username: '{{ docker_registry_username }}'
+        password: '{{ docker_registry_password }}'
+
+
+    - name: docker build unity editor
+      docker_image:
+        build:
+          pull: yes
+          path: '{{ config_dir }}/game-ci'
+          dockerfile: images/ubuntu/editor/Dockerfile
+          args:
+            version: '{{ unity_version }}'
+            changeSet: '{{ unity_changeset }}'
+            module: '{{ unity_module }}'
+        source: build
+        name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+        push: yes
+
+    # We could add a a license for each year into inventory maybe?
+    - name: 'copy Unity license to {{ config_dir }}/Unity_v2020.x.ulf'
+      copy:
+        content: '{{ unity_ulf }}'
+        dest: '{{ config_dir }}/Unity_v2020.x.ulf'
+  
+
+    # - name: 'activate editor and perform build'
+    #   docker_container:
+    #     name: automation-station-build-{{ drone_build_number }}
+    #     image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+    #     command: /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
+    #     state: started
+    #     #recreate: yes
+    #     volumes:
+    #       - '{{ config_dir }}/Unity_v2020.x.ulf:/Unity_v2020.x.ulf'
+    #       - '{{ config_dir }}/automation-station:/automation-station'
+    #     output_logs: yes
+    #     # https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#parameter-container_default_behavior
+    #     container_default_behavior: compatibility
+
+    - name: 'docker run..'
+      register: docker_output
+      shell: >
+        docker run
+        --name automation-station-build-{{ drone_build_number }}
+        -v /home/automation/Unity_v2020.x.ulf:/Unity_v2020.x.ulf
+        -v /home/automation/.diesel/automation-station-ci/development/config/automation-station:/automation-station
+        docker.nexus.diesel.net/unity-editor:{{ unity_version }}-{{ unity_module }}
+        /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
+
+    - debug:
+        msg: '{{ docker_output.stdout_lines }}'

@@ -1,0 +1,3 @@
+docker_registry: docker.nexus.diesel.net
+docker_registry_password: '{{ lookup("env", "NEXUS_PASS") }}'
+docker_registry_username: '{{ lookup("env", "NEXUS_USER") }}'
