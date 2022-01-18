@@ -96,7 +96,7 @@
       docker_container:
         name: automation-station-build-{{ drone_build_number }}
         image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-        command: /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.PerformBuild -logFile -"
+        command: /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
         state: started
         #recreate: yes
         volumes:

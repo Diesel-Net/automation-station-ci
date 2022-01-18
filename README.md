@@ -40,5 +40,5 @@ docker run \
     -v /home/automation/Unity_v2020.x.ulf:/Unity_v2020.x.ulf \
     -v /home/automation/.diesel/automation-station-ci/development/config/automation-station:/automation-station \
     docker.nexus.diesel.net/unity-editor:2020.3.24f1-windows-mono \
-    /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.PerformBuild -logFile -"
+    /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
 ```
