@@ -34,7 +34,7 @@ docker run -it \
 
 ```
 
-Activate license
+Activate license && build game
 ```bash
 docker run \
     -v /home/automation/Unity_v2020.x.ulf:/Unity_v2020.x.ulf \
