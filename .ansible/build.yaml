@@ -112,14 +112,14 @@
           path: '{{ docker_dir }}'
           args:
             image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-            license_file: '{{ config_dir }}/Unity_v2020.x.ulf'
+            license_file: 'Unity_v2020.x.ulf'
         source: build
         name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'
         push: no
 
     # - shell: >
     #     docker run
-        
+
   
 
     # - name: 'activate editor and perform build'
