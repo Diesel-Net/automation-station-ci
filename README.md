@@ -1,3 +1,6 @@
+[![Build Status](https://drone.kiwi-labs.net/api/badges/Diesel-Net/automation-station-ci/status.svg)](https://drone.kiwi-labs.net/Diesel-Net/automation-station-ci)
+
+
 # automation-station-ci
 Automation Station CI
 
@@ -34,7 +37,7 @@ docker run -it \
 
 ```
 
-Activate license
+Activate license && build game
 ```bash
 docker run \
     -v /home/automation/Unity_v2020.x.ulf:/Unity_v2020.x.ulf \

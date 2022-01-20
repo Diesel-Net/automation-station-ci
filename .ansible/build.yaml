@@ -4,6 +4,10 @@
 
   tasks:
 
+    - name: wait for host to become reachable
+      wait_for_connection:
+        timeout: 600
+
     - include_role:
         name: common
         tasks_from: make_config_dir
@@ -12,6 +16,11 @@
     - include_role:
         name: common
         tasks_from: make_data_dir
+
+
+    - include_role:
+        name: common
+        tasks_from: make_docker_dir
     
 
     - name: 'git clone modulocity/automation-station to {{ config_dir }}/automation-station'
@@ -43,15 +52,16 @@
 
 
     - name: load variables from ProjectVersion.txt
-      include_vars:
-        file: '{{ playbook_dir }}/../ProjectVersion.txt'
+      set_fact:
+        project_version: "{{ lookup('file', playbook_dir+'/../ProjectVersion.txt').splitlines() }}"
+    - debug:
+        msg: '{{ project_version }}'
 
 
     - name: extract version and changeset
       set_fact:
-        unity_version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
-        unity_changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
-
+        unity_version: "{{ project_version[0] | regex_search('^m_EditorVersion:\\s(.*)$', '\\1') | first }}"
+        unity_changeset: "{{ project_version[1] | regex_search('^m_EditorVersionWithRevision:\\s(.*)\\s\\((.*)\\)$', '\\2') | first }}"
 
     - debug:
         msg: "unity_version: {{ unity_version }}"
@@ -62,6 +72,7 @@
     - name: install docker python package on remote host
       pip:
         name: docker
+        state: latest
 
 
     - name: 'docker login ({{ docker_registry }})'
@@ -85,36 +96,63 @@
         name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
         push: yes
 
-    # We could add a a license for each year into inventory maybe?
-    - name: 'copy Unity license to {{ config_dir }}/Unity_v2020.x.ulf'
+
+    - name: 'copy Unity license to {{ docker_dir }}/UnityLicense.ulf'
       copy:
         content: '{{ unity_ulf }}'
-        dest: '{{ config_dir }}/Unity_v2020.x.ulf'
-  
+        dest: '{{ docker_dir }}/UnityLicense.ulf'
 
-    # - name: 'activate editor and perform build'
-    #   docker_container:
-    #     name: automation-station-build-{{ drone_build_number }}
-    #     image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-    #     command: /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
-    #     state: started
-    #     #recreate: yes
-    #     volumes:
-    #       - '{{ config_dir }}/Unity_v2020.x.ulf:/Unity_v2020.x.ulf'
-    #       - '{{ config_dir }}/automation-station:/automation-station'
-    #     output_logs: yes
-    #     # https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#parameter-container_default_behavior
-    #     container_default_behavior: compatibility
 
-    - name: 'docker run..'
-      register: docker_output
+    - name: 'copy activate.Dockerfile {{ docker_dir }}/Dockerfile'
+      copy:
+        src: '{{ playbook_dir }}/../activate.Dockerfile'
+        dest: '{{ docker_dir }}/Dockerfile'
+
+
+    - name: 'copy activate.sh {{ docker_dir }}/activate.sh'
+      copy:
+        src: '{{ playbook_dir }}/../activate.sh'
+        dest: '{{ docker_dir }}/activate.sh'
+
+
+    - name: 'docker build ACTIVATED unity editor'
+      docker_image:
+        build:
+          pull: yes
+          path: '{{ docker_dir }}'
+          args:
+            editor_image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+            license_file: 'UnityLicense.ulf'
+        source: build
+        name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'
+        push: no
+
+
+    - name: 'building game files'
+      register: build_output
       shell: >
         docker run
         --name automation-station-build-{{ drone_build_number }}
-        -v /home/automation/Unity_v2020.x.ulf:/Unity_v2020.x.ulf
-        -v /home/automation/.diesel/automation-station-ci/development/config/automation-station:/automation-station
-        docker.nexus.diesel.net/unity-editor:{{ unity_version }}-{{ unity_module }}
-        /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
+        -v {{ config_dir }}/automation-station:/automation-station
+        docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
+        unity-editor 
+        -quit 
+        -projectPath /automation-station 
+        -buildTarget Win64 
+        -executeMethod BuildRunner.BuildWindowsMonoDebug 
+        -logFile -
+    - debug:
+        msg: '{{ build_output.stdout_lines }}'
+
+
+    - name: 'package and upload game to itch.io'
+      shell: >
+        docker run
+        -v {{ config_dir }}/automation-station/Builds/windows-mono-debug:/build
+        -e BUTLER_API_KEY={{ butler_api_key }} 
+        dosowisko/butler:latest 
+        butler push /build gravitonpunch/automation-station:windows-mono-debug-alpha
+      register: butler_output
 
     - debug:
-        msg: '{{ docker_output.stdout_lines }}'
+        msg: '{{ butler_output.stdout_lines }}'
