@@ -47,9 +47,9 @@
         flat: yes
 
 
-    - name: load variables from ProjectVersion.txt
-      include_vars:
-        file: '{{ playbook_dir }}/../ProjectVersion.txt'
+    # - name: load variables from ProjectVersion.txt
+    #   include_vars:
+    #     file: '{{ playbook_dir }}/../ProjectVersion.txt'
 
 
     - name: load variables from ProjectVersion.txt
@@ -61,8 +61,8 @@
 
     - name: extract version and changeset
       set_fact:
-        unity_version: "{{ project_version.splitlines() | first | regex_search }}"
-        unity_changeset: "{{ m_EditorVersionWithRevision | regex_search('.*\\s\\((.*)\\)', '\\1') | first }}"
+        unity_version: "{{ project_version[0] | regex_search('^m_EditorVersion:\\s(.*)$', '\\1') }}"
+        unity_changeset: "{{ project_version[1] | regex_search('^m_EditorVersionWithRevision:\\s(.*)\\s\\((.*)\\)$', '\\2') }}"
 
     - debug:
         msg: "unity_version: {{ unity_version }}"
