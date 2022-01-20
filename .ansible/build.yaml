@@ -52,11 +52,17 @@
         file: '{{ playbook_dir }}/../ProjectVersion.txt'
 
 
+    - name: load variables from ProjectVersion.txt
+      set_fact:
+        project_version: '{{ lookup('file', playbook_dir+'/../ProjectVersion.txt') }}'
+    - debug:
+        msg: '{{ project_version }}'
+
+
     - name: extract version and changeset
       set_fact:
-        unity_version: "{{ m_EditorVersion }}"
+        unity_version: "{{ project_version.splitlines() | first | regex_search }}"
         unity_changeset: "{{ m_EditorVersionWithRevision | regex_search('.*\\s\\((.*)\\)', '\\1') | first }}"
-
 
     - debug:
         msg: "unity_version: {{ unity_version }}"
