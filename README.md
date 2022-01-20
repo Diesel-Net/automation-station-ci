@@ -1,3 +1,6 @@
+[![Build Status](https://drone.kiwi-labs.net/api/badges/Diesel-Net/automation-station-ci/status.svg)](https://drone.kiwi-labs.net/Diesel-Net/automation-station-ci)
+
+
 # automation-station-ci
 Automation Station CI
 

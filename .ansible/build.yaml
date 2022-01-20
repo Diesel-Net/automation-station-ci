@@ -1,3 +1,19 @@
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  tasks:
+    
+    - name: boot win11 host
+      proxmox_kvm:
+        vmid: '{{ proxmox_vm_id }}'
+        name: '{{ proxmox_vm_name }}'
+        api_user: '{{ proxmox_user }}'
+        api_password: '{{ proxmox_api_password }}'
+        api_host: '{{ proxmox_api_host }}'
+        node: pve
+        state: started
+      when: inventory_dir | basename == 'stable'
+
 - hosts: manager
   roles:
     - common
@@ -152,3 +168,19 @@
 
     - debug:
         msg: '{{ butler_output.stdout_lines }}'
+
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  tasks:
+
+    - name: poweroff win11 host
+      proxmox_kvm:
+        vmid: '{{ proxmox_vm_id }}'
+        name: '{{ proxmox_vm_name }}'
+        api_user: '{{ proxmox_user }}'
+        api_password: '{{ proxmox_api_password }}'
+        api_host: '{{ proxmox_api_host }}'
+        node: pve
+        state: stopped
+      when: inventory_dir | basename == 'stable'

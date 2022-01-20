@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: automation-station weekly build
+name: game build test
 
 concurrency:
   limit: 1
@@ -32,5 +32,40 @@ trigger:
     - push
   branch:
     - development
+
+---
+kind: pipeline
+type: docker
+name: weekly game build
+
+concurrency:
+  limit: 1
+
+steps:
+  - name: build
+    image: plugins/ansible:3
+    environment:
+      ANSIBLE_CONFIG: .ansible/ansible.cfg
+      GIT_CLONE_PAT:
+        from_secret: git_clone_pat
+      BUTLER_API_KEY:
+        from_secret: butler_api_key
+      NEXUS_PASS:
+        from_secret: nexus_pass
+    settings:
+      galaxy: .ansible/roles/requirements.yaml
+      inventory: .ansible/inventories/stable
+      playbook: .ansible/build.yaml
+      private_key:
+        from_secret: automation_id_rsa
+      vault_password:
+        from_secret: ansible_vault_password
+
+
+trigger:
+  event:
+    - cron
+  cron:
+    - weekly_builds
 
 ...
