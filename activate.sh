@@ -1,10 +1,14 @@
 # https://github.com/game-ci/unity-builder/blob/main/dist/steps/activate.sh
 
+ls -l UnityLicense.ulf
+
 # Activate license
 ACTIVATION_OUTPUT=$(unity-editor \
     -logFile /dev/stdout \
     -quit \
     -manualLicenseFile UnityLicense.ulf)
+
+echo ACTIVATION_OUTPUT
 
 # Store the exit code from the verify command
 UNITY_EXIT_CODE=$?
