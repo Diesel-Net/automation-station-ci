@@ -112,10 +112,10 @@
     - name: 'docker build ACTIVATED unity editor'
       docker_image:
         build:
-          pull: no
+          pull: yes
           path: '{{ docker_dir }}'
           args:
-            image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+            editor_image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
             license_file: 'UnityLicense.ulf'
         source: build
         name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'

@@ -1,6 +1,6 @@
-ARG image
+ARG editor_image
 
-FROM $image
+FROM $editor_image
 
 ARG license_file
 
