@@ -47,11 +47,6 @@
         flat: yes
 
 
-    # - name: load variables from ProjectVersion.txt
-    #   include_vars:
-    #     file: '{{ playbook_dir }}/../ProjectVersion.txt'
-
-
     - name: load variables from ProjectVersion.txt
       set_fact:
         project_version: "{{ lookup('file', playbook_dir+'/../ProjectVersion.txt').splitlines() }}"
@@ -73,6 +68,7 @@
     - name: install docker python package on remote host
       pip:
         name: docker
+        state: latest
 
 
     - name: 'docker login ({{ docker_registry }})'
