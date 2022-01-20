@@ -12,6 +12,11 @@
     - include_role:
         name: common
         tasks_from: make_data_dir
+
+
+    - include_role:
+        name: common
+        tasks_from: make_docker_dir
     
 
     - name: 'git clone modulocity/automation-station to {{ config_dir }}/automation-station'
@@ -85,31 +90,36 @@
         name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
         push: yes
 
+
     # We could add a a license for each year into inventory maybe?
-    - name: 'copy Unity license to {{ config_dir }}/Unity_v2020.x.ulf'
+    - name: 'copy Unity license to {{ docker_dir }}/Unity_v2020.x.ulf'
       copy:
         content: '{{ unity_ulf }}'
-        dest: '{{ config_dir }}/Unity_v2020.x.ulf'
+        dest: '{{ docker_dir }}/Unity_v2020.x.ulf'
 
 
     # We could add a a license for each year into inventory maybe?
-    - name: 'copy activate.Dockerfile {{ config_dir }}/Dockerfile'
+    - name: 'copy activate.Dockerfile {{ docker_dir }}/Dockerfile'
       copy:
         src: '{{ playbook_dir }}/../activate.Dockerfile'
-        dest: '{{ config_dir }}/Dockerfile'
+        dest: '{{ docker_dir }}/Dockerfile'
 
 
     - name: 'docker build ACTIVATED unity editor'
       docker_image:
         build:
           pull: no
-          path: '{{ config_dir }}'
+          path: '{{ docker_dir }}'
           args:
             image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
             license_file: '{{ config_dir }}/Unity_v2020.x.ulf'
         source: build
         name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'
         push: no
+
+    # - shell: >
+    #     docker run
+        
   
 
     # - name: 'activate editor and perform build'
@@ -132,7 +142,7 @@
         docker run
         --name automation-station-build-{{ drone_build_number }}
         -v /home/automation/.diesel/automation-station-ci/development/config/automation-station:/automation-station
-        docker.nexus.diesel.net/unity-editor:{{ unity_version }}-{{ unity_module }}
+        docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
         unity-editor -quit -projectPath /automation-station -buildTarget Win64 -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -
 
     - debug:
