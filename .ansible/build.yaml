@@ -61,8 +61,8 @@
 
     - name: extract version and changeset
       set_fact:
-        unity_version: "{{ project_version[0] | regex_search('^m_EditorVersion:\\s(.*)$', '\\1') }}"
-        unity_changeset: "{{ project_version[1] | regex_search('^m_EditorVersionWithRevision:\\s(.*)\\s\\((.*)\\)$', '\\2') }}"
+        unity_version: "{{ project_version[0] | regex_search('^m_EditorVersion:\\s(.*)$', '\\1') | first }}"
+        unity_changeset: "{{ project_version[1] | regex_search('^m_EditorVersionWithRevision:\\s(.*)\\s\\((.*)\\)$', '\\2') | first }}"
 
     - debug:
         msg: "unity_version: {{ unity_version }}"
