@@ -14,8 +14,6 @@ steps:
         from_secret: butler_api_key
       NEXUS_PASS:
         from_secret: nexus_pass
-      NEXUS_USER:
-        from_secret: nexus_user
     settings:
       galaxy: .ansible/roles/requirements.yaml
       inventory: .ansible/inventories/development
