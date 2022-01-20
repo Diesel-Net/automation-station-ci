@@ -1,6 +1,6 @@
 proxmox_vm_id: 129
 proxmox_vm_name: automation-station
-proxmox_user: '{{ lookup("env", "PROXMOX_USER" }}'
-proxmox_api_password: '{{ lookup("env", "PROXMOX_PASS")'
+proxmox_user: '{{ lookup("env", "PROXMOX_USER") }}'
+proxmox_api_password: '{{ lookup("env", "PROXMOX_PASS") }}'
 proxmox_api_host: pve.diesel.net
 proxmox_node: pve
