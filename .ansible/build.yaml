@@ -13,8 +13,8 @@
       #   node: pve
       #   state: started
       debug:
-        msg: 'hello world'
-      when: inventory_dir | basename == 'development'
+        msg: '{{ inventory_dir }}'
+      #when: inventory_dir | basename == 'development'
 
 - hosts: manager
   roles:
