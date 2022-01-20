@@ -4,6 +4,10 @@
 
   tasks:
 
+    - name: wait for host to become reachable
+      wait_for_connection:
+        timeout: 600
+
     - include_role:
         name: common
         tasks_from: make_config_dir
