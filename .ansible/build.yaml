@@ -90,6 +90,26 @@
       copy:
         content: '{{ unity_ulf }}'
         dest: '{{ config_dir }}/Unity_v2020.x.ulf'
+
+
+    # We could add a a license for each year into inventory maybe?
+    - name: 'copy activate.Dockerfile {{ config_dir }}/Dockerfile'
+      copy:
+        src: '{{ playbook_dir }}/../activate.Dockerfile'
+        dest: '{{ config_dir }}/Dockerfile'
+
+
+    - name: 'docker build ACTIVATED unity editor'
+      docker_image:
+        build:
+          pull: no
+          path: '{{ config_dir }}'
+          args:
+            image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+            license_file: '{{ config_dir }}/Unity_v2020.x.ulf'
+        source: build
+        name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'
+        push: no
   
 
     # - name: 'activate editor and perform build'
@@ -106,15 +126,14 @@
     #     # https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#parameter-container_default_behavior
     #     container_default_behavior: compatibility
 
-    - name: 'docker run..'
+    - name: 'building unity executable'
       register: docker_output
       shell: >
         docker run
         --name automation-station-build-{{ drone_build_number }}
-        -v /home/automation/Unity_v2020.x.ulf:/Unity_v2020.x.ulf
         -v /home/automation/.diesel/automation-station-ci/development/config/automation-station:/automation-station
         docker.nexus.diesel.net/unity-editor:{{ unity_version }}-{{ unity_module }}
-        /bin/bash -c "unity-editor -manualLicenseFile /Unity_v2020.x.ulf -quit -logFile - ; unity-editor -quit -projectPath /automation-station -buildTarget Win64 -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -"
+        unity-editor -quit -projectPath /automation-station -buildTarget Win64 -executeMethod BuildRunner.BuildWindowsMonoRelease -logFile -
 
     - debug:
         msg: '{{ docker_output.stdout_lines }}'
