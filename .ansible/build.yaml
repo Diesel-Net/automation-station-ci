@@ -54,8 +54,8 @@
 
     - name: extract version and changeset
       set_fact:
-        unity_version: "{{ m_EditorVersionWithRevision.split(' ') | first }}"
-        unity_changeset: "{{ m_EditorVersionWithRevision.split(' ') | last | replace('(','') | replace(')','') | replace('\n','') }}"
+        unity_version: "{{ m_EditorVersion }}"
+        unity_changeset: "{{ m_EditorVersionWithRevision | regex_search('.*\s\((.*)\)', '\\1') | first }}"
 
 
     - debug:
