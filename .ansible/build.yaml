@@ -1,21 +1,18 @@
-- hosts: localhost
+- hosts: drone
   gather_facts: no
   connection: local
   tasks:
     
     - name: boot win11 host
-      # proxmox_kvm:
-      #   vmid: '{{ proxmox_vm_id }}'
-      #   name: '{{ proxmox_vm_name }}'
-      #   api_user: '{{ proxmox_user }}'
-      #   api_password: '{{ proxmox_api_password }}'
-      #   api_host: '{{ proxmox_api_host }}'
-      #   node: pve
-      #   state: started
-      debug:
-        # https://github.com/ansible/ansible/issues/30901
-        msg: '{{ inventory_dir | basename }}'
-      #when: inventory_dir | basename == 'development'
+      proxmox_kvm:
+        vmid: '{{ proxmox_vm_id }}'
+        name: '{{ proxmox_vm_name }}'
+        api_user: '{{ proxmox_user }}'
+        api_password: '{{ proxmox_api_password }}'
+        api_host: '{{ proxmox_api_host }}'
+        node: pve
+        state: started
+      when: inventory_dir | basename == 'development'
 
 - hosts: manager
   roles:
@@ -172,7 +169,7 @@
     - debug:
         msg: '{{ butler_output.stdout_lines }}'
 
-- hosts: localhost
+- hosts: drone
   gather_facts: no
   connection: local
   tasks:

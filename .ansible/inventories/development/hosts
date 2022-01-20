@@ -5,7 +5,7 @@ all:
       hosts:
         test.diesel.net:
 
-    localhost:
+    drone:
       hosts:
         localhost:
 
