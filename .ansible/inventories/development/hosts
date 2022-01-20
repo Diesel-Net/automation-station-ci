@@ -5,10 +5,6 @@ all:
       hosts:
         test.diesel.net:
 
-    drone:
-      hosts:
-        localhost:
-
   vars:
     ansible_user: automation
     ansible_python_interpreter: /usr/bin/python3
