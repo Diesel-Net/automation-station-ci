@@ -8,4 +8,6 @@ COPY $license_file UnityLicense.ulf
 
 COPY activate.sh activate.sh
 
-RUN chmod +x activate.sh && ./activate.sh
+RUN chmod +x activate.sh
+
+RUN ./activate.sh
