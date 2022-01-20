@@ -14,7 +14,7 @@
       #   state: started
       debug:
         # https://github.com/ansible/ansible/issues/30901
-        msg: '{{ ansible_inventory_sources[0] | dirname }}'
+        msg: '{{ inventory_dir | basename }}'
       #when: inventory_dir | basename == 'development'
 
 - hosts: manager
