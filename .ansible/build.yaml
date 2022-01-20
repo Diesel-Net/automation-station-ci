@@ -13,7 +13,8 @@
       #   node: pve
       #   state: started
       debug:
-        msg: '{{ inventory_dir }}'
+        # https://github.com/ansible/ansible/issues/30901
+        msg: '{{ inventory_dir if inventory_dir else (ansible_inventory_sources[0] | dirname) }}'
       #when: inventory_dir | basename == 'development'
 
 - hosts: manager
