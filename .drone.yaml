@@ -3,6 +3,9 @@ kind: pipeline
 type: docker
 name: automation-station weekly build
 
+concurrency:
+  limit: 1
+
 steps:
   - name: build
     image: plugins/ansible:3
