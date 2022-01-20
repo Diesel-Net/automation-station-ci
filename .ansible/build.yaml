@@ -126,10 +126,15 @@
       register: build_output
       shell: >
         docker run
-        --name automation-station-build-{{ drone_build_number }}
-        -v {{ config_dir }}/automation-station:/automation-station
-        docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
-        unity-editor -quit -projectPath /automation-station -buildTarget Win64 -executeMethod BuildRunner.BuildWindowsMonoDebug -logFile -
+          --name automation-station-build-{{ drone_build_number }}
+          -v {{ config_dir }}/automation-station:/automation-station
+          docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
+          unity-editor 
+            -quit 
+            -projectPath /automation-station 
+            -buildTarget Win64 
+            -executeMethod BuildRunner.BuildWindowsMonoDebug 
+            -logFile -
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
@@ -137,10 +142,10 @@
     - name: 'package and upload game to itch.io'
       shell: >
         docker run
-        -v {{ config_dir }}/automation-station/Builds/windows-mono-debug:/build
-        -e BUTLER_API_KEY={{ butler_api_key }} 
-        dosowisko/butler:latest 
-        butler push /build gravitonpunch/automation-station:windows-mono-debug-alpha
+          -v {{ config_dir }}/automation-station/Builds/windows-mono-debug:/build
+          -e BUTLER_API_KEY={{ butler_api_key }} 
+          dosowisko/butler:latest 
+          butler push /build gravitonpunch/automation-station:windows-mono-debug-alpha
       register: butler_output
 
     - debug:
