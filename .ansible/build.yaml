@@ -4,14 +4,16 @@
   tasks:
     
     - name: boot win11 host
-      proxmox_kvm:
-        vmid: '{{ proxmox_vm_id }}'
-        name: '{{ proxmox_vm_name }}'
-        api_user: '{{ proxmox_user }}'
-        api_password: '{{ proxmox_api_password }}'
-        api_host: '{{ proxmox_api_host }}'
-        node: pve
-        state: started
+      # proxmox_kvm:
+      #   vmid: '{{ proxmox_vm_id }}'
+      #   name: '{{ proxmox_vm_name }}'
+      #   api_user: '{{ proxmox_user }}'
+      #   api_password: '{{ proxmox_api_password }}'
+      #   api_host: '{{ proxmox_api_host }}'
+      #   node: pve
+      #   state: started
+      debug:
+        msg: 'hello world'
       when: inventory_dir | basename == 'stable'
 
 - hosts: manager
