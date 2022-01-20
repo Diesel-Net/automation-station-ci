@@ -14,7 +14,7 @@
       #   state: started
       debug:
         msg: 'hello world'
-      when: inventory_dir | basename == 'stable'
+      #when: inventory_dir | basename == 'stable'
 
 - hosts: manager
   roles:
