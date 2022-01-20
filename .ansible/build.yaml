@@ -54,7 +54,7 @@
 
     - name: load variables from ProjectVersion.txt
       set_fact:
-        project_version: "{{ lookup('file', playbook_dir+'/../ProjectVersion.txt') }}"
+        project_version: "{{ lookup('file', playbook_dir+'/../ProjectVersion.txt').splitlines() }}"
     - debug:
         msg: '{{ project_version }}'
 
