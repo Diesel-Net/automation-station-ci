@@ -8,4 +8,4 @@ COPY $license_file UnityLicense.ulf
 
 COPY activate.sh activate.sh
 
-RUN source activate.sh
+RUN ./activate.sh
