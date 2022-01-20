@@ -105,6 +105,13 @@
         dest: '{{ docker_dir }}/Dockerfile'
 
 
+    # We could add a a license for each year into inventory maybe?
+    - name: 'copy activate.sh {{ docker_dir }}/activate.sh'
+      copy:
+        src: '{{ playbook_dir }}/../activate.sh'
+        dest: '{{ docker_dir }}/activate.sh'
+
+
     - name: 'docker build ACTIVATED unity editor'
       docker_image:
         build:
