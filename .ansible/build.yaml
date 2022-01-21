@@ -143,7 +143,7 @@
         -quit 
         -projectPath /automation-station 
         -buildTarget Win64 
-        -executeMethod BuildRunner.BuildWindowsMonoDebug 
+        -executeMethod BuildRunner.BuildWindowsMonoRelease 
         -logFile -
     - debug:
         msg: '{{ build_output.stdout_lines }}'
@@ -152,10 +152,10 @@
     - name: 'package and upload game to itch.io'
       shell: >
         docker run
-        -v {{ config_dir }}/automation-station/Builds/windows-mono-debug:/build
+        -v {{ config_dir }}/automation-station/Builds/windows-mono-release:/build
         -e BUTLER_API_KEY={{ butler_api_key }} 
         dosowisko/butler:latest 
-        butler push /build gravitonpunch/automation-station:windows-mono-debug-alpha
+        butler push /build gravitonpunch/automation-station:windows-mono-release-alpha
       register: butler_output
 
     - debug:
