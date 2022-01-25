@@ -138,14 +138,14 @@
         docker run
         --name automation-station-build-{{ drone_build_number }}
         -v {{ config_dir }}/automation-station:/automation-station
-        -v {{ data_dir }}/build.log:/build.log
+        -v {{ data_dir }}:/build-logs
         docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
         unity-editor 
         -quit 
         -projectPath /automation-station 
         -buildTarget Win64 
         -executeMethod BuildRunner.BuildWindowsMonoRelease 
-        -logFile /build.log
+        -logFile /build-logs/build.log
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
