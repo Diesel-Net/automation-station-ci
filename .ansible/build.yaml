@@ -144,10 +144,17 @@
         -projectPath /automation-station 
         -buildTarget Win64 
         -executeMethod BuildRunner.BuildWindowsMonoRelease 
-        -logFile -
+        -logFile {{ data_dir }}/build.log
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
+
+    - name: 'load build log from {{ data_dir }}/build.log'
+      set_fact:
+        build_log: "{{ lookup('file', data_dir +'/build.log') }}"
+    - debug:
+        msg: '{{ build_log }}'
+  
 
     - name: 'package and upload game to itch.io'
       shell: >
