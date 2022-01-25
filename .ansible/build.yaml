@@ -138,21 +138,21 @@
         docker run
         --name automation-station-build-{{ drone_build_number }}
         -v {{ config_dir }}/automation-station:/automation-station
-        -v {{ data_dir }}:/build-logs
+        -v {{ data_dir }}/build-logs:/build-logs
         docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
         unity-editor 
         -quit 
         -projectPath /automation-station 
         -buildTarget Win64 
         -executeMethod BuildRunner.BuildWindowsMonoRelease 
-        -logFile /build-logs
+        -logFile /build-logs/build.log
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
 
-    - name: 'load build log from {{ data_dir }}/build.log'
+    - name: 'load build log from {{ data_dir }}/build-logs/build.log'
       set_fact:
-        build_log: "{{ lookup('file', data_dir +'/build.log') }}"
+        build_log: "{{ lookup('file', data_dir +'/build-logs/build.log') }}"
     - debug:
         msg: '{{ build_log }}'
   
