@@ -159,7 +159,7 @@
 
     - name: load build log from build.log
       set_fact:
-        build_log: "{{ lookup('file', 'playbook_dir+'/../build.log') }}"
+        build_log: "{{ lookup('file', playbook_dir+'/../build.log') }}"
     - debug:
         msg: '{{ build_log }}'
   
