@@ -3,7 +3,7 @@ all:
     
     manager:
       hosts:
-        automation-station.diesel.net:
+        unity.diesel.net:
 
     drone:
       hosts:
