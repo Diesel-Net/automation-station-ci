@@ -161,7 +161,7 @@
       set_fact:
         build_log: "{{ lookup('file', playbook_dir+'/../build.log') }}"
     - debug:
-        msg: '{{ build_log }}'
+        msg: '{{ build_log.splitlines() }}'
   
 
     - name: 'package and upload game to itch.io'
