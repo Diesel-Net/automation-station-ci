@@ -150,7 +150,7 @@
         msg: '{{ build_output.stdout_lines }}'
 
 
-    - name: `fetch the build log from {{ data_dir }}/build-logs/build.log`
+    - name: 'fetch the build log from {{ data_dir }}/build-logs/build.log'
       fetch:
         src: '{{ data_dir }}/build-logs/build.log'
         dest: '{{ playbook_dir }}/../'
