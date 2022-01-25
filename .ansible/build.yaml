@@ -145,7 +145,7 @@
         -projectPath /automation-station 
         -buildTarget Win64 
         -executeMethod BuildRunner.BuildWindowsMonoRelease 
-        -logFile /build-logs/build.log
+        -logFile /build-logs
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
