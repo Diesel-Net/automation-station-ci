@@ -150,9 +150,16 @@
         msg: '{{ build_output.stdout_lines }}'
 
 
-    - name: 'load build log from {{ data_dir }}/build-logs/build.log'
+    - name: `fetch the build log from {{ data_dir }}/build-logs/build.log`
+      fetch:
+        src: '{{ data_dir }}/build-logs/build.log'
+        dest: '{{ playbook_dir }}/../'
+        flat: yes
+
+
+    - name: load build log from build.log
       set_fact:
-        build_log: "{{ lookup('file', data_dir +'/build-logs/build.log') }}"
+        build_log: "{{ lookup('file', 'playbook_dir+'/../build.log') }}"
     - debug:
         msg: '{{ build_log }}'
   
