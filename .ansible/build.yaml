@@ -103,7 +103,7 @@
     - name: docker build unity editor
       shell: >
         docker build
-        -f images/ubuntu/editor/Dockerfile
+        -f {{ config_dir }}/game-ci/images/ubuntu/editor/Dockerfile
         -t {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
         --build-arg hubImage=unityci/hub:latest
         --build-arg baseImage=unityci/base:latest
