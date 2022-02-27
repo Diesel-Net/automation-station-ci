@@ -101,6 +101,7 @@
     #     push: yes
 
     - name: docker build unity editor
+      register: build_output
       shell: >
         docker build
         --pull
