@@ -35,7 +35,7 @@
         version: development
         accept_hostkey: yes
         update: yes
-        #force: yes
+        force: yes
 
 
     - name: 'git clone game-ci/docker {{ config_dir }}/game-ci'
@@ -73,10 +73,10 @@
         msg: "unity_changeset: {{ unity_changeset }}"
 
 
-    - name: install docker python package on remote host
-      pip:
-        name: docker
-        state: latest
+    # - name: install docker python package on remote host
+    #   pip:
+    #     name: docker
+    #     state: latest
 
 
     - name: 'docker login ({{ docker_registry }})'
@@ -86,19 +86,33 @@
         password: '{{ docker_registry_password }}'
 
 
+    # - name: docker build unity editor
+    #   docker_image:
+    #     build:
+    #       pull: yes
+    #       path: '{{ config_dir }}/game-ci'
+    #       dockerfile: images/ubuntu/editor/Dockerfile
+    #       args:
+    #         version: '{{ unity_version }}'
+    #         changeSet: '{{ unity_changeset }}'
+    #         module: '{{ unity_module }}'
+    #     source: build
+    #     name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+    #     push: yes
+
     - name: docker build unity editor
-      docker_image:
-        build:
-          pull: yes
-          path: '{{ config_dir }}/game-ci'
-          dockerfile: images/ubuntu/editor/Dockerfile
-          args:
-            version: '{{ unity_version }}'
-            changeSet: '{{ unity_changeset }}'
-            module: '{{ unity_module }}'
-        source: build
-        name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-        push: yes
+      register: build_output
+      shell: >
+        docker build
+        --pull
+        -f {{ config_dir }}/game-ci/images/ubuntu/editor/Dockerfile
+        -t {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
+        --build-arg version={{ unity_version }}
+        --build-arg changeSet={{ unity_changeset }}
+        --build-arg module={{ unity_module }}
+        {{ config_dir }}/game-ci
+    - debug:
+        msg: '{{ build_output.stdout_lines }}'
 
 
     - name: 'copy Unity license to {{ docker_dir }}/UnityLicense.ulf'
@@ -167,8 +181,9 @@
     - name: 'package and upload game to itch.io'
       shell: >
         docker run
+        --pull always
         -v {{ config_dir }}/automation-station/Builds/windows-mono-release:/build
-        -e BUTLER_API_KEY={{ butler_api_key }} 
+        -e BUTLER_API_KEY={{ butler_api_key }}
         dosowisko/butler:latest 
         butler push /build gravitonpunch/automation-station:windows-mono-release-alpha
       register: butler_output
