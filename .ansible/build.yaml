@@ -138,16 +138,31 @@
         docker run
         --name automation-station-build-{{ drone_build_number }}
         -v {{ config_dir }}/automation-station:/automation-station
+        -v {{ data_dir }}/build-logs:/build-logs
         docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
         unity-editor 
         -quit 
         -projectPath /automation-station 
         -buildTarget Win64 
         -executeMethod BuildRunner.BuildWindowsMonoRelease 
-        -logFile -
+        -logFile /build-logs/build.log
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
+
+    - name: 'fetch the build log from {{ data_dir }}/build-logs/build.log'
+      fetch:
+        src: '{{ data_dir }}/build-logs/build.log'
+        dest: '{{ playbook_dir }}/../'
+        flat: yes
+
+
+    - name: load build log from build.log
+      set_fact:
+        build_log: "{{ lookup('file', playbook_dir+'/../build.log') }}"
+    - debug:
+        msg: '{{ build_log.splitlines() }}'
+  
 
     - name: 'package and upload game to itch.io'
       shell: >
