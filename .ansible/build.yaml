@@ -115,6 +115,15 @@
         msg: '{{ build_output.stdout_lines }}'
 
 
+    - name: docker push unity editor
+      register: push_output
+      shell: >
+        docker push
+        {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
+    - debug:
+        msg: '{{ push_output.stdout_lines }}'
+
+
     - name: 'copy Unity license to {{ docker_dir }}/UnityLicense.ulf'
       copy:
         content: '{{ unity_ulf }}'
