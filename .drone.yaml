@@ -92,14 +92,8 @@ steps:
 
 trigger:
   event:
-    - push
-  branch:
-    - stable
-
-# trigger:
-#   event:
-#     - cron
-#   cron:
-#     - weekly_builds
+    - cron
+  cron:
+    - weekly-build
 
 ...
