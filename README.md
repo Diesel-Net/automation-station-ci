@@ -4,7 +4,7 @@
 # automation-station-ci
 Automation Station Continuous Integration. This repository contains the Ansible and Drone configuration necessary for automatic weekly builds of [Automation Station](https://www.automationstationgame.com/).
 
-Big thanks to the Devs working on [Game-CI](https://game.ci/), enabling users to build and compile Unity games for Windows, on Linux hardware :heart:
+:heart: A shoutout to the Devs working on [Game-CI](https://game.ci/), enabling users to build and compile Unity games for Windows, on Linux hardware! :tada:
 
 
 ## Notes
