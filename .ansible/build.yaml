@@ -16,11 +16,9 @@
         name: common
         tasks_from: make_config_dir
 
-
     - include_role:
         name: common
         tasks_from: make_data_dir
-
 
     - include_role:
         name: common
@@ -66,7 +64,6 @@
       set_fact:
         unity_version: "{{ project_version[0] | regex_search('^m_EditorVersion:\\s(.*)$', '\\1') | first }}"
         unity_changeset: "{{ project_version[1] | regex_search('^m_EditorVersionWithRevision:\\s(.*)\\s\\((.*)\\)$', '\\2') | first }}"
-
     - debug:
         msg: "unity_version: {{ unity_version }}"
     - debug:
@@ -174,8 +171,8 @@
         -v {{ config_dir }}/automation-station/Builds/windows-mono-release:/build
         -e BUTLER_API_KEY={{ butler_api_key }}
         dosowisko/butler:latest 
-        butler push {{ butler_options | default('') }} /build gravitonpunch/automation-station:windows-mono-release-alpha
+        butler push {{ butler_options | default('') }}
+        /build gravitonpunch/automation-station:windows-mono-release-alpha
       register: butler_output
-
     - debug:
         msg: '{{ butler_output.stdout_lines }}'
