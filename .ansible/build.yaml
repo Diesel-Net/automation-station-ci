@@ -173,7 +173,7 @@
         -v {{ config_dir }}/automation-station/Builds/windows-mono-release:/build
         -e BUTLER_API_KEY={{ butler_api_key }}
         dosowisko/butler:latest 
-        butler push /build gravitonpunch/automation-station:windows-mono-release-alpha
+        butler push {{ butler_options | default('') }} /build gravitonpunch/automation-station:windows-mono-release-alpha
       register: butler_output
 
     - debug:
