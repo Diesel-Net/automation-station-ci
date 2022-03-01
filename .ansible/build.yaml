@@ -73,32 +73,11 @@
         msg: "unity_changeset: {{ unity_changeset }}"
 
 
-    # - name: install docker python package on remote host
-    #   pip:
-    #     name: docker
-    #     state: latest
-
-
     - name: 'docker login ({{ docker_registry }})'
       docker_login:
         registry_url: '{{ docker_registry }}'
         username: '{{ docker_registry_username }}'
         password: '{{ docker_registry_password }}'
-
-
-    # - name: docker build unity editor
-    #   docker_image:
-    #     build:
-    #       pull: yes
-    #       path: '{{ config_dir }}/game-ci'
-    #       dockerfile: images/ubuntu/editor/Dockerfile
-    #       args:
-    #         version: '{{ unity_version }}'
-    #         changeSet: '{{ unity_changeset }}'
-    #         module: '{{ unity_module }}'
-    #     source: build
-    #     name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-    #     push: yes
 
     - name: docker build unity editor
       register: build_output
