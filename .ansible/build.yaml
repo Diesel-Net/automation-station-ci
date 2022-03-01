@@ -16,11 +16,9 @@
         name: common
         tasks_from: make_config_dir
 
-
     - include_role:
         name: common
         tasks_from: make_data_dir
-
 
     - include_role:
         name: common
@@ -66,17 +64,10 @@
       set_fact:
         unity_version: "{{ project_version[0] | regex_search('^m_EditorVersion:\\s(.*)$', '\\1') | first }}"
         unity_changeset: "{{ project_version[1] | regex_search('^m_EditorVersionWithRevision:\\s(.*)\\s\\((.*)\\)$', '\\2') | first }}"
-
     - debug:
         msg: "unity_version: {{ unity_version }}"
     - debug:
         msg: "unity_changeset: {{ unity_changeset }}"
-
-
-    # - name: install docker python package on remote host
-    #   pip:
-    #     name: docker
-    #     state: latest
 
 
     - name: 'docker login ({{ docker_registry }})'
@@ -84,21 +75,6 @@
         registry_url: '{{ docker_registry }}'
         username: '{{ docker_registry_username }}'
         password: '{{ docker_registry_password }}'
-
-
-    # - name: docker build unity editor
-    #   docker_image:
-    #     build:
-    #       pull: yes
-    #       path: '{{ config_dir }}/game-ci'
-    #       dockerfile: images/ubuntu/editor/Dockerfile
-    #       args:
-    #         version: '{{ unity_version }}'
-    #         changeSet: '{{ unity_changeset }}'
-    #         module: '{{ unity_module }}'
-    #     source: build
-    #     name: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-    #     push: yes
 
     - name: docker build unity editor
       register: build_output
@@ -140,19 +116,20 @@
       copy:
         src: '{{ playbook_dir }}/../activate.sh'
         dest: '{{ docker_dir }}/activate.sh'
-
+        
 
     - name: 'docker build ACTIVATED unity editor'
-      docker_image:
-        build:
-          pull: yes
-          path: '{{ docker_dir }}'
-          args:
-            editor_image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-            license_file: 'UnityLicense.ulf'
-        source: build
-        name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'
-        push: no
+      register: build_output
+      shell: >
+        docker build
+        --pull
+        -f {{ docker_dir }}/Dockerfile
+        -t {{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
+        --build-arg editor_image={{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
+        --build-arg license_file=UnityLicense.ulf
+        {{ docker_dir }}
+    - debug:
+        msg: '{{ build_output.stdout_lines }}'
 
 
     - name: 'building game files'
@@ -194,8 +171,8 @@
         -v {{ config_dir }}/automation-station/Builds/windows-mono-release:/build
         -e BUTLER_API_KEY={{ butler_api_key }}
         dosowisko/butler:latest 
-        butler push /build gravitonpunch/automation-station:windows-mono-release-alpha
+        butler push {{ butler_options | default('') }}
+        /build gravitonpunch/automation-station:windows-mono-release-alpha
       register: butler_output
-
     - debug:
         msg: '{{ butler_output.stdout_lines }}'
