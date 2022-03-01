@@ -119,19 +119,20 @@
       copy:
         src: '{{ playbook_dir }}/../activate.sh'
         dest: '{{ docker_dir }}/activate.sh'
-
+        
 
     - name: 'docker build ACTIVATED unity editor'
-      docker_image:
-        build:
-          pull: yes
-          path: '{{ docker_dir }}'
-          args:
-            editor_image: '{{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
-            license_file: 'UnityLicense.ulf'
-        source: build
-        name: '{{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}'
-        push: no
+      register: build_output
+      shell: >
+        docker build
+        --pull
+        -f {{ docker_dir }}/Dockerfile
+        -t {{ docker_registry }}/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
+        --build-arg editor_image={{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
+        --build-arg license_file=UnityLicense.ulf
+        {{ docker_dir }}
+    - debug:
+        msg: '{{ build_output.stdout_lines }}'
 
 
     - name: 'building game files'
