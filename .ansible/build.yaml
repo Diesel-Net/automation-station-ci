@@ -80,8 +80,8 @@
     - name: 'docker pull {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
       shell: >
         docker pull {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
-      register: pull_result
-      failed_when: pull_result.rc > 1
+      register: docker_pull
+      ignore_errors: yes
 
 
     - name: docker build unity editor
@@ -95,6 +95,7 @@
         --build-arg changeSet={{ unity_changeset }}
         --build-arg module={{ unity_module }}
         {{ config_dir }}/game-ci
+      when: docker_pull.rc > 0
     - debug:
         msg: '{{ build_output.stdout_lines }}'
 
