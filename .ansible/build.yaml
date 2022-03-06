@@ -70,11 +70,19 @@
         msg: "unity_changeset: {{ unity_changeset }}"
 
 
-    - name: 'docker login ({{ docker_registry }})'
-      docker_login:
-        registry_url: '{{ docker_registry }}'
-        username: '{{ docker_registry_username }}'
-        password: '{{ docker_registry_password }}'
+    - name: 'docker login {{ docker_registry }}'
+      shell: >
+        docker login {{ docker_registry }}
+        --username '{{ docker_registry_username }}'
+        --password '{{ docker_registry_password }}'
+
+
+    - name: 'docker pull {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+      shell: >
+        docker pull {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
+      register: pull_result
+      failed_when: pull_result.rc > 1
+
 
     - name: docker build unity editor
       register: build_output
