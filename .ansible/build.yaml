@@ -98,6 +98,7 @@
       when: docker_pull.rc > 0
     - debug:
         msg: '{{ build_output.stdout_lines }}'
+      when: docker_pull.rc > 0
 
 
     - name: docker push unity editor
