@@ -70,11 +70,19 @@
         msg: "unity_changeset: {{ unity_changeset }}"
 
 
-    - name: 'docker login ({{ docker_registry }})'
-      docker_login:
-        registry_url: '{{ docker_registry }}'
-        username: '{{ docker_registry_username }}'
-        password: '{{ docker_registry_password }}'
+    - name: 'docker login {{ docker_registry }}'
+      shell: >
+        docker login {{ docker_registry }}
+        --username '{{ docker_registry_username }}'
+        --password '{{ docker_registry_password }}'
+
+
+    - name: 'docker pull {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}'
+      shell: >
+        docker pull {{ docker_registry }}/unity-editor:{{ unity_version }}-{{ unity_module }}
+      register: docker_pull
+      ignore_errors: yes
+
 
     - name: docker build unity editor
       register: build_output
@@ -87,8 +95,10 @@
         --build-arg changeSet={{ unity_changeset }}
         --build-arg module={{ unity_module }}
         {{ config_dir }}/game-ci
+      when: docker_pull.rc > 0
     - debug:
         msg: '{{ build_output.stdout_lines }}'
+      when: docker_pull.rc > 0
 
 
     - name: docker push unity editor
@@ -132,36 +142,35 @@
         msg: '{{ build_output.stdout_lines }}'
 
 
-    - name: 'building game files'
-      register: build_output
-      shell: >
-        docker run
-        --name automation-station-build-{{ drone_build_number }}
-        -v {{ config_dir }}/automation-station:/automation-station
-        -v {{ data_dir }}/build-logs:/build-logs
-        docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
-        unity-editor 
-        -quit 
-        -projectPath /automation-station 
-        -buildTarget Win64 
-        -executeMethod BuildRunner.BuildWindowsMonoRelease 
-        -logFile /build-logs/build.log
-    - debug:
-        msg: '{{ build_output.stdout_lines }}'
-
-
-    - name: 'fetch the build log from {{ data_dir }}/build-logs/build.log'
-      fetch:
-        src: '{{ data_dir }}/build-logs/build.log'
-        dest: '{{ playbook_dir }}/../'
-        flat: yes
-
-
-    - name: load build log from build.log
-      set_fact:
-        build_log: "{{ lookup('file', playbook_dir+'/../build.log') }}"
-    - debug:
-        msg: '{{ build_log.splitlines() }}'
+    - name: 'build game files'
+      block:
+        - name: 'perform build'
+          register: build_output
+          shell: >
+            docker run
+            --name automation-station-build-{{ drone_build_number }}
+            -v {{ config_dir }}/automation-station:/automation-station
+            -v {{ data_dir }}/build-logs:/build-logs
+            docker.nexus.diesel.net/activated-unity-editor:{{ unity_version }}-{{ unity_module }}
+            unity-editor 
+            -quit 
+            -projectPath /automation-station 
+            -buildTarget Win64 
+            -executeMethod BuildRunner.BuildWindowsMonoRelease 
+            -logFile /build-logs/build.log
+        - debug:
+            msg: '{{ build_output.stdout_lines }}'
+      always:
+        - name: 'fetch the build log from {{ data_dir }}/build-logs/build.log'
+          fetch:
+            src: '{{ data_dir }}/build-logs/build.log'
+            dest: '{{ playbook_dir }}/../'
+            flat: yes
+        - name: load build log from build.log
+          set_fact:
+            build_log: "{{ lookup('file', playbook_dir+'/../build.log') }}"
+        - debug:
+            msg: '{{ build_log.splitlines() }}'
   
 
     - name: 'package and upload game to itch.io'
