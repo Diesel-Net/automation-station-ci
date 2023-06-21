@@ -39,7 +39,8 @@ jobs:
         with:
           targetPlatform: StandaloneWindows64
           gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
-          versioning: Semantic
+          versioning: Custom
+          version: 0.0.2
 
       # Deploy
       - name: Deploy to Steam
