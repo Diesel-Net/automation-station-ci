@@ -22,7 +22,7 @@ jobs:
       # Local cache
       - name: Local cache for library folder
         id: library-cache
-        uses: modulocity/action-local-cache@1.0.0
+        uses: Diesel-Net/action-local-cache@1.0.0
         with:
           path: Library
           key: Library-AutomationStation-StandaloneWindows64
