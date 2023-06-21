@@ -1,1 +1,0 @@
-drone_build_number: "{{ lookup('env','DRONE_BUILD_NUMBER') }}"

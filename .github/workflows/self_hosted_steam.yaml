@@ -1,0 +1,53 @@
+name: Build & Deploy to Steam
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: 0 6 * * sun  # At 06:00 on Sunday.
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: automation-station-runner
+    outputs:
+      buildVersion: ${{ steps.build.outputs.buildVersion }}
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: modulocity/automation-station
+          lfs: true
+          
+      # Cache
+      - name: Cache for Library folder
+        id: library-cache
+        uses: Diesel-Net/action-local-cache@1.0.0
+        with:
+          path: Library
+          key: Library-AutomationStation-StandaloneWindows64
+
+      # Build
+      - name: Build project
+        id: build
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: StandaloneWindows64
+          gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
+          versioning: Semantic
+
+      # Deploy
+      - name: Deploy to Steam
+        uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
+          appId: ${{ secrets.STEAM_APP_ID }}
+          buildDescription: v${{ steps.build.outputs.buildVersion }}
+          rootPath: build
+          depot1Path: StandaloneWindows64
+          releaseBranch: development
