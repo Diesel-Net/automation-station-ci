@@ -1,6 +1,5 @@
 name: Build & Deploy to Steam
 
-#on: [push, pull_request]
 on:
   workflow_dispatch: {}
   schedule:
@@ -19,29 +18,13 @@ jobs:
         with:
           lfs: true
           
-      # Local cache
-      - name: Local cache for library folder
+      # Cache
+      - name: Cache for Library folder
         id: library-cache
         uses: Diesel-Net/action-local-cache@1.0.0
         with:
           path: Library
           key: Library-AutomationStation-StandaloneWindows64
-
-      # Cache
-#      - uses: actions/cache@v2
-#        with:
-#          path: Library
-#          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-#          restore-keys: |
-#            Library-
-
-      # Test
-#      - name: Run tests
-#        uses: game-ci/unity-test-runner@v2
-#        env:
-#          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-#        with:
-#          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       # Build
       - name: Build project
@@ -56,12 +39,8 @@ jobs:
           gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
           versioning: Semantic
 
-      # Output
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: Build
-#          path: build
-          
+      # Deploy
+      - name: Deploy to Steam
       - uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}
