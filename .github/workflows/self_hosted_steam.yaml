@@ -1,0 +1,73 @@
+name: Build & Deploy to Steam
+
+#on: [push, pull_request]
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: 0 6 * * sun  # At 06:00 on Sunday.
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: self-hosted
+    outputs:
+      buildVersion: ${{ steps.build.outputs.buildVersion }}
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          
+      # Local cache
+      - name: Local cache for library folder
+        id: library-cache
+        uses: modulocity/action-local-cache@1.0.0
+        with:
+          path: Library
+          key: Library-AutomationStation-StandaloneWindows64
+
+      # Cache
+#      - uses: actions/cache@v2
+#        with:
+#          path: Library
+#          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+#          restore-keys: |
+#            Library-
+
+      # Test
+#      - name: Run tests
+#        uses: game-ci/unity-test-runner@v2
+#        env:
+#          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+#        with:
+#          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build
+      - name: Build project
+        id: build
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: StandaloneWindows64
+          gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
+          versioning: Semantic
+
+      # Output
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: Build
+#          path: build
+          
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
+          appId: ${{ secrets.STEAM_APP_ID }}
+          buildDescription: v${{ steps.build.outputs.buildVersion }}
+          rootPath: build
+          depot1Path: StandaloneWindows64
+          releaseBranch: development
