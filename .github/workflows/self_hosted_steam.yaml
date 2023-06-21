@@ -20,9 +20,6 @@ jobs:
           token: ${{ secrets.MODULOCITY_PAT }}
           lfs: true
 
-      - name: Test PAT
-        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-parse HEAD; git remote show origin)"'
-          
       # Cache
       - name: Cache for Library folder
         id: library-cache
@@ -30,6 +27,9 @@ jobs:
         with:
           path: Library
           key: Library-AutomationStation-StandaloneWindows64
+
+      - name: Test PAT
+        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-parse HEAD; git remote show origin)"'
 
       # Build
       - name: Build project
