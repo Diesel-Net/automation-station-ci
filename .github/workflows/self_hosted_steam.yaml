@@ -21,7 +21,7 @@ jobs:
           lfs: true
 
       - name: Test PAT
-        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-parse HEAD)"'
+        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-parse HEAD; git remote show origin)"'
           
       # Cache
       - name: Cache for Library folder
