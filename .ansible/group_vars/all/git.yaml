@@ -1,1 +1,0 @@
-git_clone_pat: '{{ lookup("env", "GIT_CLONE_PAT") }}'
