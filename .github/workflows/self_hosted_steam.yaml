@@ -21,7 +21,7 @@ jobs:
           lfs: true
 
       - name: Test PAT
-        run: 'echo "Result of git rev-list --count HEAD: $(cd ${{GITHUB_WORKSPACE}}; git rev-list --count HEAD)"'
+        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-list --count HEAD)"'
           
       # Cache
       - name: Cache for Library folder
