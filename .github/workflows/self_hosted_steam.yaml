@@ -29,7 +29,7 @@ jobs:
           key: Library-AutomationStation-StandaloneWindows64
 
       - name: Test PAT
-        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-parse HEAD; git remote show origin); pwd; git tag --list --merged HEAD | grep -E '${this.grepCompatibleInputVersionRegex}' | wc -l"'
+        run: 'echo "Result of git rev-list --count HEAD: $(cd /home/automation/actions-runner-5/_work/automation-station-ci/automation-station-ci/; git rev-parse HEAD; git remote show origin); pwd; git tag --list --merged HEAD | grep -E ^v?([0-9]+\\.)*[0-9]+.* | wc -l"'
 
       # Build
       - name: Build project
