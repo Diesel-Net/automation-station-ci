@@ -41,7 +41,7 @@ jobs:
 
       # Deploy
       - name: Deploy to Steam
-      - uses: game-ci/steam-deploy@v3
+        uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}
           configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
