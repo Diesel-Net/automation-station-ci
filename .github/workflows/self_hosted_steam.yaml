@@ -30,6 +30,7 @@ jobs:
 
       - name: Test PAT
         run: |
+          git fetch --unshallow
           pwd
           git remote -v
           git rev-parse --is-shallow-repository
