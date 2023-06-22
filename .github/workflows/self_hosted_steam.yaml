@@ -1,14 +1,23 @@
 name: Build & Deploy to Steam
 
 on:
-  workflow_dispatch: {}
-  schedule:
-    - cron: 0 6 * * sun  # At 06:00 on Sunday.
+  workflow_call:
+    inputs:
+      runs-on:
+        required: true
+        type: string
+      target-platform:
+        required: true
+        type: string
+      steam-branch:
+        required: true
+        type: string
+    secrets: inherit
 
 jobs:
   build:
     name: Build & Deploy
-    runs-on: automation-station-runner
+    runs-on: ${{ inputs.runs-on }}
     outputs:
       buildVersion: ${{ steps.build.outputs.buildVersion }}
     steps:
@@ -16,8 +25,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          repository: modulocity/automation-station
-          token: ${{ secrets.MODULOCITY_PAT }}
           lfs: true
 
       # Cache
@@ -26,21 +33,7 @@ jobs:
         uses: Diesel-Net/action-local-cache@1.0.0
         with:
           path: Library
-          key: Library-AutomationStation-StandaloneWindows64
-
-      - name: Test PAT
-        run: |
-          pwd
-          git fetch --unshallow
-          git --no-pager diff | head -n 10
-          git symbolic-ref HEAD
-          git remote -v
-          git rev-parse --is-shallow-repository
-          git rev-parse HEAD
-          git remote show origin
-          git tag --list --merged HEAD | grep -E "^v?([0-9]+\\.)*[0-9]+.*" | wc -l
-          echo ${{ github.ref }}
-          echo ${{ github.head_ref }}
+          key: Library-${{ github.event.repository.name }}-${{ inputs.target-platform }}
 
       # Build
       - name: Build project
@@ -51,7 +44,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: StandaloneWindows64
+          targetPlatform: ${{ inputs.target-platform }}
           gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
           versioning: Semantic
 
@@ -64,5 +57,5 @@ jobs:
           appId: ${{ secrets.STEAM_APP_ID }}
           buildDescription: v${{ steps.build.outputs.buildVersion }}
           rootPath: build
-          depot1Path: StandaloneWindows64
-          releaseBranch: development
+          depot1Path: ${{ inputs.target-platform }}
+          releaseBranch: ${{ inputs.steam-branch }}
