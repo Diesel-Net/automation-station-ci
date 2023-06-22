@@ -31,7 +31,7 @@ jobs:
       - name: Test PAT
         run: |
           git fetch --unshallow
-          git --no-pager diff | head -n ${this.maxDiffLines.toString()}
+          git --no-pager diff | head -n 10
           pwd
           git remote -v
           git rev-parse --is-shallow-repository
