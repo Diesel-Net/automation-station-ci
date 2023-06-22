@@ -30,9 +30,10 @@ jobs:
 
       - name: Test PAT
         run: |
+          pwd
           git fetch --unshallow
           git --no-pager diff | head -n 10
-          pwd
+          git symbolic-ref HEAD
           git remote -v
           git rev-parse --is-shallow-repository
           git rev-parse HEAD
