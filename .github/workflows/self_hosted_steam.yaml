@@ -30,12 +30,12 @@ jobs:
 
       - name: Test PAT
         run: |
-          'echo "pwd: $(pwd)"'
-          'echo "git remote -v: $(git remote -v)"'
-          'echo "git rev-parse --is-shallow-repository: $(git rev-parse --is-shallow-repository)"'
-          'echo "git rev-parse HEAD: $(git rev-parse HEAD)"'
-          'echo "git remote show origin: $(git remote show origin)"'
-          'echo "git tag --list --merged HEAD | grep -E "^v?([0-9]+\\.)*[0-9]+.*" | wc -l: $(git tag --list --merged HEAD | grep -E "^v?([0-9]+\\.)*[0-9]+.*" | wc -l)"'
+          pwd
+          git remote -v
+          git rev-parse --is-shallow-repository
+          git rev-parse HEAD
+          git remote show origin
+          git tag --list --merged HEAD | grep -E "^v?([0-9]+\\.)*[0-9]+.*" | wc -l
 
       # Build
       - name: Build project
