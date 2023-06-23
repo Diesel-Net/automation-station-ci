@@ -6,8 +6,17 @@ on:
       runs-on:
         required: true
         type: string
-      target-platform:
+      target-platform1:
+        default: ""
         required: true
+        type: string
+      target-platform2:
+        default: ""
+        required: false
+        type: string
+      target-platform3:
+        default: ""
+        required: false
         type: string
       steam-branch:
         required: true
@@ -16,7 +25,10 @@ on:
 
 jobs:
   build:
-    name: Build & Deploy
+    name: Build ${{ matrix.target-platform }}
+    strategy:
+      matrix:
+        target-platform: [target-platform1 ]
     runs-on: ${{ inputs.runs-on }}
     outputs:
       buildVersion: ${{ steps.build.outputs.buildVersion }}
@@ -33,7 +45,7 @@ jobs:
         uses: Diesel-Net/action-local-cache@1.0.0
         with:
           path: Library
-          key: Library-${{ github.event.repository.name }}-${{ inputs.target-platform }}
+          key: Library-${{ github.event.repository.name }}-${{ matrix.target-platform }}
 
       # Build
       - name: Build project
@@ -44,18 +56,23 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: ${{ inputs.target-platform }}
+          targetPlatform: ${{ matrix.target-platform }}
           gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
           versioning: Semantic
 
       # Deploy
+  deploy:
+    name: Steam Deploy
+    needs: [build]
+    runs-on: ${{ inputs.runs-on }}
+    steps:
       - name: Deploy to Steam
         uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}
           configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
           appId: ${{ secrets.STEAM_APP_ID }}
-          buildDescription: v${{ steps.build.outputs.buildVersion }}
+          buildDescription: v${{ needs.build.outputs.buildVersion }}
           rootPath: build
-          depot1Path: ${{ inputs.target-platform }}
+          depot1Path: ${{ matrix.target-platform }}
           releaseBranch: ${{ inputs.steam-branch }}
