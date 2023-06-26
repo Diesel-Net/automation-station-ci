@@ -6,17 +6,8 @@ on:
       runs-on:
         required: true
         type: string
-      target-platform1:
-        default: ""
+      target-platforms:
         required: true
-        type: string
-      target-platform2:
-        default: ""
-        required: false
-        type: string
-      target-platform3:
-        default: ""
-        required: false
         type: string
       steam-branch:
         required: true
@@ -28,7 +19,7 @@ jobs:
     name: Build ${{ matrix.target-platform }}
     strategy:
       matrix:
-        target-platform: [target-platform1 ]
+        target-platform: ${{ fromJSON(inputs.target-platforms) }}
     runs-on: ${{ inputs.runs-on }}
     outputs:
       buildVersion: ${{ steps.build.outputs.buildVersion }}
@@ -67,12 +58,12 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Deploy to Steam
-        uses: game-ci/steam-deploy@v3
+        uses: Diesel-Net/steam-deploy@main # TODO: switch this to a tag version
         with:
           username: ${{ secrets.STEAM_USERNAME }}
           configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
           appId: ${{ secrets.STEAM_APP_ID }}
           buildDescription: v${{ needs.build.outputs.buildVersion }}
           rootPath: build
-          depot1Path: ${{ matrix.target-platform }}
+          depotPaths: ${{  join(fromJSON(inputs.target-platforms), ",") }}
           releaseBranch: ${{ inputs.steam-branch }}
