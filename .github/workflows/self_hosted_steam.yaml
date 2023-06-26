@@ -12,7 +12,21 @@ on:
       steam-branch:
         required: true
         type: string
-    secrets: inherit
+    secrets:
+      unity-email:
+        required: true
+      unity-password:
+        required: true
+      unity-license:
+        required: true
+      git-private-token:
+        required: true
+      steam-username:
+        required: true
+      steam-app-id:
+        required: true
+      steam-config-vdf:
+        required: true
 
 jobs:
   build:
@@ -43,12 +57,12 @@ jobs:
         id: build
         uses: game-ci/unity-builder@v2
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.unity-license }}
+          UNITY_EMAIL: ${{ secrets.unity-email }}
+          UNITY_PASSWORD: ${{ secrets.unity-password }}
         with:
           targetPlatform: ${{ matrix.target-platform }}
-          gitPrivateToken: ${{ secrets.MODULOCITY_PAT }}
+          gitPrivateToken: ${{ secrets.git-private-token }}
           versioning: Semantic
 
       # Deploy
@@ -60,10 +74,10 @@ jobs:
       - name: Deploy to Steam
         uses: Diesel-Net/steam-deploy@main # TODO: switch this to a tag version
         with:
-          username: ${{ secrets.STEAM_USERNAME }}
-          configVdf: ${{ secrets.STEAM_CONFIG_VDF}}
-          appId: ${{ secrets.STEAM_APP_ID }}
+          username: ${{ secrets.steam-username }}
+          configVdf: ${{ secrets.steam-config-vdf}}
+          appId: ${{ secrets.steam-app-id }}
           buildDescription: v${{ needs.build.outputs.buildVersion }}
           rootPath: build
-          depotPaths: ${{  join(fromJSON(inputs.target-platforms), ",") }}
+          depotPaths: ${{  join(fromJSON(inputs.target-platforms), ',') }}
           releaseBranch: ${{ inputs.steam-branch }}
